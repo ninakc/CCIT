@@ -1,10 +1,24 @@
 
 # wrapper function to simulate data, fit tree, and evaluate outcomes
-run_simu <- function(gps_spec = 1, num_exposure_cats, sample_size = 20000,
-                     em_spec = 1, heterogenous_intercept = FALSE, beta = NULL, outcome_sd = 1, correct_splits = NULL, true_trt_effect_func = NULL, noise.var,
-                     n_trials, lambdas, stopping.rule,
-                     exploration.sample_covs = NULL, inference.sample_covs = NULL, val.sample_covs = NULL,
-                     matched.exploration.sample = NULL, matched.validation.sample = NULL, matched.inference.sample = NULL) {
+run_simu <- function(gps_spec = 1,
+                     num_exposure_cats,
+                     sample_size = 20000,
+                     em_spec = 1,
+                     heterogenous_intercept = FALSE,
+                     beta = NULL,
+                     outcome_sd = 1,
+                     correct_splits = NULL,
+                     true_trt_effect_func = NULL,
+                     noise.var,
+                     n_trials,
+                     lambdas,
+                     stopping.rule,
+                     exploration.sample_covs = NULL,
+                     inference.sample_covs = NULL,
+                     val.sample_covs = NULL,
+                     matched.exploration.sample = NULL,
+                     matched.validation.sample = NULL,
+                     matched.inference.sample = NULL) {
 
   # if the matched covariate dataset (everything but the outcome) is not passed in, generate one
   if (is.null(matched.exploration.sample) | is.null(matched.validation.sample) | is.null(matched.inference.sample) |
@@ -130,13 +144,13 @@ run_simu <- function(gps_spec = 1, num_exposure_cats, sample_size = 20000,
         matched.exploration.sample.outcomes, matched.validation.sample.outcomes, matched.inference.sample.outcomes, lambdas, stopping.rule)
 
       est.treatment.effects <- CCIT_results$est.treatment.effects
-      
+
       selected.trees <- CCIT_results$selected.trees
-      
+
       tree.list <- CCIT_results$tree.list
-      
+
       selected.tree.size <- CCIT_results$selected.tree.size
-    
+
       true_trt_effects <- true_trt_effect_func(est.treatment.effects[[1]])
 
       mse <- sapply(est.treatment.effects, function(est.treatment.effect) {

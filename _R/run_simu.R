@@ -198,20 +198,3 @@ run_simu <- function(gps_spec = 1,
     val.sample_covs = val.sample_covs
   ))
 }
-
-# pps calculation doesn't complete
-# pps = 1
-# for(i in 1:(nrow(inference.sample)-1)){
-#   for(j in (i+1):nrow(inference.sample)){
-#     a=b=0
-#     if(true_trt_effects$eff[i] == true_trt_effects$eff[j]){a = 1}
-#
-#     # Treat observations in the 1-observation terminal node be in the same node
-#     if(is.na(est.treatment.effects$pred[i]) | is.na(est.treatment.effects$pred[j])) {
-#       b = 1
-#     } else if (est.treatment.effects$pred[i] == est.treatment.effects$pred[j]) {
-#       b = 1
-#     }
-#     pps = pps - abs(a-b)/choose(nrow(inference.sample), 2)
-#   }
-# }

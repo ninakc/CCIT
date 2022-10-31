@@ -1,9 +1,11 @@
-create.sequence = function(exploration.dat, ulist.used, parms.used){ # add more args
+create.sequence = function(exploration.dat, ulist.used, parms.used, f){ # add more args
   # This function calculates the sequence of candidate trees.
   
   # Fit a large tree using the user written splitting functions
   a <- rpart(
-    id ~ em1 + em2 + em3 + em4, data = exploration.dat, 
+    id ~ em1 + em2 + em3 + em4, 
+    # f,
+    data = exploration.dat, 
     method   = ulist.used,
     parms    = parms.used,
     control  = rpart.control(cp = -10, minbucket = 1, maxsurrogate = 0, maxcompete = 0))
@@ -116,8 +118,9 @@ create.sequence = function(exploration.dat, ulist.used, parms.used){ # add more 
       
       tree.new = tree.used
       tree.new$frame = frame.new
-      if(class(splits.new) == "matrix"){tree.new$splits = splits.new}
-      if(class(splits.new) == "numeric"){
+      print(class(splits.new))
+      if("matrix" %in% class(splits.new)){tree.new$splits = splits.new}
+      if("numeric" %in% class(splits.new)){
         tree.new$splits = matrix(splits.new, nrow = 1)
         colnames(tree.new$splits) = colnames(tree.used$splits)
       }

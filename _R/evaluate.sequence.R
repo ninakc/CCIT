@@ -68,20 +68,9 @@ evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
           last.right[[right.ind]]   <- val.sample.right
           right.ind <- right.ind + 1
         }
-        #error when validation sample has no values of one effect modifier level
-        #print(head(val.sample.used[, col.ind]))
-        #print(var.used)
-        #print(head(val.sample.used))
-        # lmod <- lm(val.sample.used$Y ~ val.sample.used[, col.ind]*val.sample.used$w)
         f <- as.formula(paste0('Y ~ ', var.used, '*w'))
         lmod <- lm(f, data = val.sample.used)
-        #print(names(val.sample.used))
-        #print(coef(summary(lmod))[4,])
-        #print(coef(summary(lmod)))
-        #print(f)
         t <- abs(coef(summary(lmod))[4,"t value"])
-        #t <- abs(coef(summary(lmod))["val.sample.used[, col.ind]:val.sample.used$w", "t value"])
-        #inter <- abs(coef(summary(lmod))["val.sample.used[, var.used]1:val.sample.used$w", "Estimate"])
         goodness.test <- goodness.test + t**2
       } # End h
     } # End if loop
@@ -91,7 +80,6 @@ evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
                                         lambda = lambdas, 
                                         pruning.step = m,
                                         tree.size = ifelse(is.null(tree.used$splits), 0, nrow(tree.used$splits))))
-    #complex.val[[m]] = goodness.test - lambdas * numb.int
     #names(complex.val[[m]]) <- lambdas
   } # End m loop
   return (complex.val)

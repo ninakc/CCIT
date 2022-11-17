@@ -1,29 +1,29 @@
 evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
   val = as.data.frame(val)
-  
+
   # Storage space for the complexity value associated with each candidate tree
   #complex.val = rep(NA, length(tree.list))
   complex.val <- data.frame()
-  
+
   # Computing G on validation set for each tree in sequence
   for (m in 1:length(tree.list)){
-    tree.used = tree.list[[m]] 
-    
+    tree.used = tree.list[[m]]
+
     # If only root node there is no internal node
     if(nrow(tree.used$frame) == 1){
       goodness.test = 0
       numb.int = 0
-      
+
     } else { # If at least one split
-      
+
       is.leaf <- (tree.used$frame$var == "<leaf>")
       goodness.test = 0
       # Finding the test data falling in each terminal node (each non-terminal node??)
       numb.int = sum(!is.leaf)
-      
+
       right.ind  <- 1
       last.right <- NULL
-      
+
       for (h in 1:dim(tree.used$frame)[1]){
         #print(h)
 
@@ -51,7 +51,7 @@ evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
         split.used <- tree.used$splits[row.ind, 4]
         var.used <- tree.used$frame$var[h] # splitting variable
         col.ind <- which(colnames(val.sample.used) == var.used)
-        
+
         lvls <- levels(val[, col.ind])
         # lvls[tree.used$csplit[split.used, ] == 1] returns the value of the EM variable that goes to the left
         val.sample.left  <- val.sample.used[val.sample.used[, col.ind] %in% lvls[tree.used$csplit[split.used, ] == 1], ]
@@ -68,7 +68,7 @@ evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
           last.right[[right.ind]]   <- val.sample.right
           right.ind <- right.ind + 1
         }
-        f <- as.formula(paste0('Y ~ ', var.used, '*w'))
+        f <- as.formula(paste0('Y ~ ', var.used, '*treat'))
         lmod <- lm(f, data = val.sample.used)
         t <- abs(coef(summary(lmod))[4,"t value"])
         goodness.test <- goodness.test + t**2
@@ -76,8 +76,8 @@ evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
     } # End if loop
     # Calculating complexity value
 
-    complex.val <- rbind(complex.val, data.frame(complex.val = goodness.test - lambdas * numb.int, 
-                                        lambda = lambdas, 
+    complex.val <- rbind(complex.val, data.frame(complex.val = goodness.test - lambdas * numb.int,
+                                        lambda = lambdas,
                                         pruning.step = m,
                                         tree.size = ifelse(is.null(tree.used$splits), 0, nrow(tree.used$splits))))
     #names(complex.val[[m]]) <- lambdas

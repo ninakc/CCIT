@@ -1,3 +1,14 @@
+#' @description
+#'
+#'
+#'
+#' @param tree.list: list of trees returned by create.sequence function
+#' @param val: validation dataframe with outcome Y, exposure variable treat
+#' @param exploration.dat: exploration dataframe with outcome Y, exposure variable treat
+#' @param lambdas: regularization values to use
+#'
+#' @returns dataframe with one row for each tree in sequence and lambda value, representing the ability of the tree to explain the effect heterogeneityß
+
 evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
   val = as.data.frame(val)
 

@@ -1,3 +1,18 @@
+#' @description
+#' Perform CCIT algorithm to estimate conditional average treatment effect
+#'
+#'
+#' @param matched.exploration.sample.outcomes: exploration dataframe with outcome Y, exposure variable treat
+#' @param matched.validation.sample.outcomes: validation dataframe with outcome Y, exposure variable treat
+#' @param matched.inference.sample.outcomes: inference dataframe with outcome Y, exposure variable treat
+#' @param lambdas: vector of values to use as the regularization parameter in the CCIT algorithm
+#' @param stopping.rule: boolean to indicate whether the tree-splitting algorithm should stop when the estimated interaction effect is <1/10 of the overall effect
+#'
+#' @returns list of:
+#'       est.treatment.effects: For each lambda value, dataframe with CATE estimates for all observations
+#'       selected.trees: For each lambda value, selected decision tree
+#'       tree.list: all decisions trees in the sequence
+#'       selected.tree.size: For each lambda value, size of selected decision tree
 CCIT <- function(matched.exploration.sample.outcomes = NULL, matched.validation.sample.outcomes = NULL, matched.inference.sample.outcomes = NULL,
                  lambdas, stopping.rule) {
 

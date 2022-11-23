@@ -1,11 +1,33 @@
+# set this to the directory with source code
+source_dir <- '/Users/ninakatz-christy/CCIT_Final_refactored/CCIT'
+source(paste0(source_dir, '/R/generate_synthetic_data_covs.R'))
+source(paste0(source_dir, '/R/generate_synthetic_data_outcome.R'))
+source(paste0(source_dir, '/_R/split_dataset.R'))
+source(paste0(source_dir, '/_R/stratified_GPS_matching.R'))
+source(paste0(source_dir, '/_R/CCIT.R'))
+source(paste0(source_dir, '/_R/rpart_funcs.R'))
+source(paste0(source_dir, '/_R/create.sequence.R'))
 
+library(truncnorm)
+library(CausalGPS)
+library(dplyr)
+library(data.table)
+library(caret)
+library(rpart)
+# dir_out <- '/Users/ninakatz-christy/Documents/CCIT/Code/CCIT/simulated_data_09122022/'
+# source(paste0(source_dir, '/_R/evaluate.sequence.R'))
+# source(paste0(source_dir, '/_R/run_simu.R'))
+# source(paste0(source_dir, '/_R/generate_synthetic_data_outcome.R'))
 
 # Step 1: Generate a synthetic data set.
 ## Step 1a: Generate covariates and treatment
 synth_data_covs <- generate_syn_data_covs(sample_size = 10000, gps_spec = 2)
 
 ## Step 1b: Determine covariate balance
-absolute_corr_fun(as.data.table(synth_data_covs$treat), as.data.table(synth_data_covs[c('cf1', 'cf2', 'cf3', 'cf4', 'cf5', 'cf6')]))
+CausalGPS::absolute_corr_fun(
+  data.table::as.data.table(synth_data_covs$treat),
+  data.table::as.data.table(synth_data_covs[c('cf1', 'cf2', 'cf3', 'cf4', 'cf5', 'cf6')])
+)
 
 
 ## Step 1c: Add outcome to generated data
@@ -26,7 +48,7 @@ matched_synth_data <- stratified_GPS_matching(
 # Step 4: Combine generated matched data.
 
 # Step 5: Conduct conditional average treatment effect.
-CCIT(
+CCIT_result <- CCIT(
   filter(matched_synth_data, subsample == 'exploration'),
   matched.validation.sample.outcomes = filter(matched_synth_data, subsample == 'validation'),
   matched.inference.sample.outcomes = filter(matched_synth_data, subsample == 'inference'),

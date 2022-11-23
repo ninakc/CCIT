@@ -1,10 +1,19 @@
-create.sequence = function(exploration.dat, ulist.used, parms.used, f){ # add more args
-  # This function calculates the sequence of candidate trees.
+#' @description
+#' This function calculates the sequence of candidate trees
+#'
+#'
+#' @param exploration.dat: exploration dataframe with outcome Y and exposure variable treat
+#' @param ulist.used: user-specified functions to supply to rpart (return value of define_u.list)
+#' @param parms.used: additional parameters to supply to rpart
+#'
+#'
+#' @returns: list of nested decision trees and corresponding goodness metrics
+create.sequence = function(exploration.dat, ulist.used, parms.used){
 
   exploration.dat <- exploration.dat %>% tibble::rowid_to_column('dummy')
 
   # Fit a large tree using the user written splitting functions
-  a <- rpart(
+  a <- rpart::rpart(
     dummy ~ em1 + em2 + em3 + em4,
     # f,
     data = exploration.dat,

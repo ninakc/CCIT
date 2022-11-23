@@ -1,55 +1,14 @@
-# stratified_GPS_matching <- function(data, delta_n, bin_seq = bin_seq) {
-#
-#   data <- data %>% tibble::rowid_to_column('orig_id')
-#
-#   matched <- data.frame()
-#
-#   for(i in levels(data$em1)) {
-#     for (j in levels(data$em2)) {
-#       for (k in levels(data$em3)) {
-#         for (l in levels(data$em4)) {
-#           sub_pop <- data %>%
-#             filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
-#             tibble::rowid_to_column('new_id') #row index of sub-pop
-#           pseudo_pop_fit <- generate_pseudo_pop(1:nrow(sub_pop), # why is the outcome required?
-#                                                 sub_pop$treat,
-#                                                 sub_pop[, sapply(1:6, function(x) {paste0('cf',x)})],
-#                                                 ci_appr = "matching",
-#                                                 pred_model = "sl",
-#                                                 gps_model = "parametric",
-#                                                 use_cov_transform = TRUE,
-#                                                 transformers = list("pow2", "pow3"),
-#                                                 bin_seq = bin_seq,
-#                                                 sl_lib = c("m_xgboost"),
-#                                                 params = list('xgb_max_depth' = c(3,4,5),
-#                                                               'xgb_nrounds'=c(10,20,30,40,50,60),
-#                                                   #"xgb_nrounds"=50,
-#                                                               #"xgb_max_depth"=6,
-#                                                               "xgb_eta"=0.3,
-#                                                               "xgb_min_child_weight"=1),
-#                                                 nthread=5, # number of cores, you can change,
-#                                                 covar_bl_method = "absolute",
-#                                                 covar_bl_trs = 0.1,
-#                                                 covar_bl_trs_type = "mean",
-#                                                 trim_quantiles = c(0.5,0.95), # trimed, you can change
-#                                                 optimized_compile = FALSE, #created a column counter for how many times matched,
-#                                                 max_attempt = 1,
-#                                                 matching_fun = "matching_l1",
-#                                                 delta_n = delta_n, # you can change this to the one you used in previous analysis,
-#                                                 scale = 1.0)
-#           sub_pop_pseudo <- pseudo_pop_fit$pseudo_pop %>%
-#             left_join(sub_pop, by = c('row_index' = 'new_id', 'cf1','cf2', 'cf3', 'cf4', 'cf5', 'cf6'))
-#           # need to convert row_index to original row_index in data
-#           matched <- rbind(matched, sub_pop_pseudo)
-#           print(absolute_corr_fun(as.data.table(sub_pop)[,'treat'], as.data.table(sub_pop)[,c('cf1', 'cf2', 'cf3', 'cf4', 'cf5', 'cf6')]))
-#           print(absolute_corr_fun(as.data.table(sub_pop_pseudo)[,'treat'], as.data.table(sub_pop_pseudo)[,c('cf1', 'cf2', 'cf3', 'cf4', 'cf5', 'cf6')]))
-#         }
-#       }
-#     }
-#   }
-#   return(matched)
-# }
-
+#' @description
+#' split dataset into training, validation, and inference, stratifying by exposure level
+#'
+#' Required Libraries: CausalGPS
+#'
+#' @param data: dataframe with data to be matched
+#' @param delta_n: bin width parameter to pass to CausalGPS
+#' @param exposure_name: name of the exposure variable
+#' @param confounders_names: vector of strings representing names of the confounding variables
+#' @param names_of_strata_vars: vector of strings representing names of variables to stratify by
+#' @param outcome_name: name of outcome variable
 
 stratified_GPS_matching <- function(data, delta_n, exposure_name, confounders_names, names_of_strata_vars, outcome_name) {
 
@@ -65,7 +24,6 @@ stratified_GPS_matching <- function(data, delta_n, exposure_name, confounders_na
                stratified_GPS_matching(
                 filter(data, get(strata_var) == strata_lvl),
                 delta_n = delta_n,
-                # bin_seq = bin_seq,
                 exposure_name = exposure_name,
                 confounders_names = confounders_names,
                 names_of_strata_vars = names_of_strata_vars[names_of_strata_vars != strata_var],
@@ -78,9 +36,8 @@ stratified_GPS_matching <- function(data, delta_n, exposure_name, confounders_na
   else { # only a single stratum left
     if(nrow(data) > 0) {
       sub_pop <- data %>%
-        # filter(em1 == '1', em2 == '1', em2 == '1', em4 == '1') %>%
         tibble::rowid_to_column('new_id') #row index of sub-pop
-      pseudo_pop_fit <- generate_pseudo_pop(ifelse(is.na(outcome_name), 1:nrow(sub_pop), sub_pop[,outcome_name]),  # why is the outcome required?
+      pseudo_pop_fit <- CausalGPS::generate_pseudo_pop(ifelse(is.na(outcome_name), 1:nrow(sub_pop), sub_pop[,outcome_name]),  # why is the outcome required?
                                             sub_pop[,exposure_name],
                                             select(sub_pop, confounders_names),
                                             ci_appr = "matching",

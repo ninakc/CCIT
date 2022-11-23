@@ -1,5 +1,11 @@
-# define functions for custom rpart function
-# required libraries: rpart, rpart.plot
+
+#' @description
+#' define functions for custom rpart function
+#'
+#' required libraries: rpart, rpart.plot
+#'
+#' @param stopping.rule: boolean to indicate whether the tree-splitting algorithm should stop when the estimated interaction effect is <1/10 of the overall effect
+#'
 define_u.list <- function(stopping.rule = TRUE) {
   criterion <- function(Y,treat) {
     lmod <- lm(Y ~ treat + 1)
@@ -61,11 +67,3 @@ define_u.list <- function(stopping.rule = TRUE) {
   ulist.used <- list(eval = etemp, split = stemp, init = itemp)
   return(ulist.used)
 }
-
-
-# criterion <- function(Y,w) {
-#   lmod <- glm(Y ~ w + 1, family = 'poisson')
-#   lmod$coefficients['w']
-# }
-
-

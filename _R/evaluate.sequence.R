@@ -1,6 +1,5 @@
 #' @description
-#'
-#'
+#' Evaluate list of trees returned by create.sequence function
 #'
 #' @param tree.list: list of trees returned by create.sequence function
 #' @param val: validation dataframe with outcome Y, exposure variable treat

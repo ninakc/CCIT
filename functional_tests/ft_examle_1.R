@@ -7,6 +7,7 @@ source(paste0(source_dir, '/_R/stratified_GPS_matching.R'))
 source(paste0(source_dir, '/_R/CCIT.R'))
 source(paste0(source_dir, '/_R/rpart_funcs.R'))
 source(paste0(source_dir, '/_R/create.sequence.R'))
+source(paste0(source_dir, '/_R/evaluate.sequence.R'))
 
 library(truncnorm)
 library(CausalGPS)
@@ -14,10 +15,6 @@ library(dplyr)
 library(data.table)
 library(caret)
 library(rpart)
-# dir_out <- '/Users/ninakatz-christy/Documents/CCIT/Code/CCIT/simulated_data_09122022/'
-# source(paste0(source_dir, '/_R/evaluate.sequence.R'))
-# source(paste0(source_dir, '/_R/run_simu.R'))
-# source(paste0(source_dir, '/_R/generate_synthetic_data_outcome.R'))
 
 # Step 1: Generate a synthetic data set.
 ## Step 1a: Generate covariates and treatment

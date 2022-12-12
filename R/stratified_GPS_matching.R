@@ -1,16 +1,22 @@
+#' @title
+#' Stratify GPS matching
+#'
 #' @description
-#' split dataset into training, validation, and inference, stratifying by exposure level
+#' TBD
 #'
-#' Required Libraries: CausalGPS
-#'
-#' @param data: dataframe with data to be matched
-#' @param delta_n: bin width parameter to pass to CausalGPS
-#' @param exposure_name: name of the exposure variable
-#' @param confounders_names: vector of strings representing names of the confounding variables
-#' @param names_of_strata_vars: vector of strings representing names of variables to stratify by
-#' @param outcome_name: name of outcome variable
+#' @param data: A data frame with data to be matched.
+#' @param delta_n: A bin width parameter to pass to the CausalGPS package.
+#' @param exposure_name: The name of the exposure variable.
+#' @param confounders_names: A vector of strings representing names of the
+#' confounding variables.
+#' @param names_of_strata_vars: A vector of strings representing names of
+#' variables to stratify by.
+#' @param outcome_name: The name of the outcome variable.
 
-stratified_GPS_matching <- function(data, delta_n, exposure_name, confounders_names, names_of_strata_vars, outcome_name) {
+stratified_GPS_matching <- function(data, delta_n, exposure_name,
+                                    confounders_names,
+                                    names_of_strata_vars,
+                                    outcome_name) {
 
   if (length(names_of_strata_vars) > 0) {
     strata_var <- names_of_strata_vars[1]
@@ -39,7 +45,7 @@ stratified_GPS_matching <- function(data, delta_n, exposure_name, confounders_na
         tibble::rowid_to_column('new_id') #row index of sub-pop
       pseudo_pop_fit <- CausalGPS::generate_pseudo_pop(ifelse(is.na(outcome_name), 1:nrow(sub_pop), sub_pop[,outcome_name]),  # why is the outcome required?
                                             sub_pop[,exposure_name],
-                                            select(sub_pop, confounders_names),
+                                            dplyr::select(sub_pop, confounders_names),
                                             ci_appr = "matching",
                                             pred_model = "sl",
                                             gps_model = "parametric",
@@ -67,7 +73,7 @@ stratified_GPS_matching <- function(data, delta_n, exposure_name, confounders_na
       sub_pop <- left_join(sub_pop, weights, by = c('new_id' = 'row_index'))
       sub_pop <- sub_pop %>% mutate(n = ifelse(is.na(n), 0, n))
       sub_pop <- as.data.frame(lapply(sub_pop, rep, sub_pop$n))
-      return(select(sub_pop, -n))
+      return(dplyr::select(sub_pop, -n))
     }
     else {
       return(data.frame())}

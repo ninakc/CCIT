@@ -1,5 +1,5 @@
 # set this to the directory with source code
-source_dir <- '/Users/ninakatz-christy/CCIT_Final_refactored/CCIT'
+source_dir <- '..'
 source(paste0(source_dir, '/R/generate_synthetic_data_covs.R'))
 source(paste0(source_dir, '/R/generate_synthetic_data_outcome.R'))
 source(paste0(source_dir, '/_R/split_dataset.R'))
@@ -21,11 +21,12 @@ library(rpart)
 synth_data_covs <- generate_syn_data_covs(sample_size = 10000, gps_spec = 2)
 
 ## Step 1b: Determine covariate balance
-CausalGPS::absolute_corr_fun(
+org_cor <- CausalGPS::absolute_corr_fun(
   data.table::as.data.table(synth_data_covs$treat),
   data.table::as.data.table(synth_data_covs[c('cf1', 'cf2', 'cf3', 'cf4', 'cf5', 'cf6')])
 )
 
+print(org_cor)
 
 ## Step 1c: Add outcome to generated data
 synth_data <-

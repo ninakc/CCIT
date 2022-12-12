@@ -1,12 +1,17 @@
+#' @title
+#' Evaluate sequence
+#'
 #' @description
 #' Evaluate list of trees returned by create.sequence function
 #'
 #' @param tree.list: list of trees returned by create.sequence function
 #' @param val: validation dataframe with outcome Y, exposure variable treat
-#' @param exploration.dat: exploration dataframe with outcome Y, exposure variable treat
+#' @param exploration.dat: exploration dataframe with outcome Y, exposure
+#' variable treat
 #' @param lambdas: regularization values to use
 #'
-#' @returns dataframe with one row for each tree in sequence and lambda value, representing the ability of the tree to explain the effect heterogeneityß
+#' @returns dataframe with one row for each tree in sequence and lambda value,
+#' representing the ability of the tree to explain the effect heterogeneity
 
 evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
   val = as.data.frame(val)
@@ -86,10 +91,13 @@ evaluate.sequence <- function(tree.list, val, exploration.dat, lambdas) {
     } # End if loop
     # Calculating complexity value
 
-    complex.val <- rbind(complex.val, data.frame(complex.val = goodness.test - lambdas * numb.int,
-                                        lambda = lambdas,
-                                        pruning.step = m,
-                                        tree.size = ifelse(is.null(tree.used$splits), 0, nrow(tree.used$splits))))
+    complex.val <- rbind(complex.val,
+                         data.frame(complex.val = goodness.test - lambdas * numb.int,
+                                    lambda = lambdas,
+                                    pruning.step = m,
+                                    tree.size = ifelse(is.null(tree.used$splits),
+                                                       0,
+                                                       nrow(tree.used$splits))))
     #names(complex.val[[m]]) <- lambdas
   } # End m loop
   return (complex.val)

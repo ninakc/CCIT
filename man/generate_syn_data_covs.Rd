@@ -2,12 +2,19 @@
 % Please edit documentation in R/generate_synthetic_data_covs.R
 \name{generate_syn_data_covs}
 \alias{generate_syn_data_covs}
-\title{Generate Synthetic Data for CausalGPS Package - Modified by Nina}
+\title{Generate synthetic covariates, effect modifiers and treatment level variables}
 \usage{
 generate_syn_data_covs(sample_size = 10000, gps_spec = 1)
 }
+\arguments{
+\item{sample_size:}{desired size of generated synthetic dataset}
+
+\item{gps_spec:}{propensity score / treatment function of data generating
+process (possible values: 1, 2)}
+}
+\value{
+A data.frame of synthetic data set that includes covariates and treatment.
+}
 \description{
 Generates synthetic data set based on different GPS models and covariates.
-
-Required Libraries: truncnorm, dplyr
 }

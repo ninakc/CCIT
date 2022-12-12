@@ -18,7 +18,13 @@ BugReports: https://github.com/NSAPH-Software/CCIT/issues
 Depends: 
     R (>= 3.5.0)
 Imports: 
-    logger
+    logger,
+    dplyr,
+    truncnorm,
+    CausalGPS,
+    data.table,
+    rpart,
+    caret
 Suggests:
     covr,
     knitr,

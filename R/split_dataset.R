@@ -1,10 +1,16 @@
+#' @title
+#' Split data set
+#'
 #' @description
-#' split dataset into training, validation, and inference, stratifying by exposure level
+#' Splits data set into training, validation, and inference, stratifying
+#' by exposure level.
 #'
 #' Required Libraries: caret, dplyr
 #'
-#' @param data: dataframe with variable "treat" corresponding to exposure level
-#' @param num_exposure_cats: the number of categories to bin the exposure level into for stratification
+#' @param data: A data.frame with variable "treat" corresponding to
+#' exposure level
+#' @param num_exposure_cats: the number of categories to bin the exposure
+#' level into for stratification
 
 split_dataset <- function(data, num_exposure_cats) {
 
@@ -21,6 +27,6 @@ split_dataset <- function(data, num_exposure_cats) {
     mutate(subsample = ifelse(row_number() %in% subsample.index[[2]], 'exploration',
                               ifelse(row_number() %in% subsample.index[[3]], 'validation', 'inference')))
 
-  return(select(data, -treat_level))
+  return(dplyr::select(data, -treat_level))
 }
 

@@ -6,8 +6,8 @@ source(paste0(source_dir, '/_R/split_dataset.R'))
 source(paste0(source_dir, '/_R/stratified_GPS_matching.R'))
 source(paste0(source_dir, '/_R/CCIT.R'))
 source(paste0(source_dir, '/_R/rpart_funcs.R'))
-source(paste0(source_dir, '/_R/create.sequence.R'))
-source(paste0(source_dir, '/_R/evaluate.sequence.R'))
+source(paste0(source_dir, '/_R/create_sequence.R'))
+source(paste0(source_dir, '/_R/evaluate_sequence.R'))
 
 library(truncnorm)
 library(CausalGPS)
@@ -47,8 +47,8 @@ matched_synth_data <- stratified_GPS_matching(
 # Step 5: Conduct conditional average treatment effect.
 CCIT_result <- CCIT(
   filter(matched_synth_data, subsample == 'exploration'),
-  matched.validation.sample.outcomes = filter(matched_synth_data, subsample == 'validation'),
-  matched.inference.sample.outcomes = filter(matched_synth_data, subsample == 'inference'),
+  matched_validation_sample_outcomes = filter(matched_synth_data, subsample == 'validation'),
+  matched_inference_sample_outcomes = filter(matched_synth_data, subsample == 'inference'),
   lambdas=c(1),
-  stopping.rule = TRUE
+  stopping_rule = TRUE
   )

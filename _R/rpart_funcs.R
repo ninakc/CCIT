@@ -4,9 +4,9 @@
 #'
 #' required libraries: rpart, rpart.plot
 #'
-#' @param stopping.rule: boolean to indicate whether the tree-splitting algorithm should stop when the estimated interaction effect is <1/10 of the overall effect
+#' @param stopping_rule: boolean to indicate whether the tree-splitting algorithm should stop when the estimated interaction effect is <1/10 of the overall effect
 #'
-define_u.list <- function(stopping.rule = TRUE) {
+define_u_list <- function(stopping_rule = TRUE) {
   criterion <- function(Y,treat) {
     lmod <- lm(Y ~ treat + 1)
     lmod$coefficients['treat']
@@ -48,7 +48,7 @@ define_u.list <- function(stopping.rule = TRUE) {
     if (min(table(EM)) <= 1) {
       goodness = c(0)
     }
-    else if (stopping.rule && inter <= parms$overall_effect/10 ) {
+    else if (stopping_rule && inter <= parms$overall_effect/10 ) {
       goodness = c(0)
     }
     # if the estimated interaction effect is less than 1/10 of the overall effect, set goodness to 0
@@ -64,6 +64,6 @@ define_u.list <- function(stopping.rule = TRUE) {
     list(goodness = goodness, direction = ux[ord])
   }
 
-  ulist.used <- list(eval = etemp, split = stemp, init = itemp)
-  return(ulist.used)
+  ulist_used <- list(eval = etemp, split = stemp, init = itemp)
+  return(ulist_used)
 }

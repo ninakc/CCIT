@@ -37,7 +37,7 @@ run_simu <- function(gps_spec = 1,
 
     # split data into subsamples, stratifying on exposure level bins
     synth_data_covs <-
-      split_dataset(data = synth_data_covs, exposure_bins = synth_data_covs$treat_level)
+      split_dataset(data = synth_data_covs, num_exposure_cats = num_exposure_cats)
 
     exploration.sample_covs <-
       synth_data_covs %>%
@@ -57,9 +57,9 @@ run_simu <- function(gps_spec = 1,
     # GPS matching within subsamples and effect modifier groups
     matched.exploration.sample <-
       stratified_GPS_matching(exploration.sample_covs, delta_n,
-        bin_seq = a.vals, exposure_name = "treat",
+        exposure_name = "treat",
         confounders_names = c("cf1", "cf2", "cf3", "cf4", "cf5", "cf6"),
-        em_names = c("em1", "em2", "em3", "em4"),
+        names_of_strata_vars = c("em1", "em2", "em3", "em4"),
         outcome_name = NA
       ) %>%
       mutate(id = row_number()) %>%
@@ -70,9 +70,9 @@ run_simu <- function(gps_spec = 1,
 
     matched.validation.sample <-
       stratified_GPS_matching(val.sample_covs, delta_n,
-        bin_seq = a.vals, exposure_name = "treat",
+        exposure_name = "treat",
         confounders_names = c("cf1", "cf2", "cf3", "cf4", "cf5", "cf6"),
-        em_names = c("em1", "em2", "em3", "em4"),
+        names_of_strata_vars = c("em1", "em2", "em3", "em4"),
         outcome_name = NA
       ) %>%
       mutate(id = row_number()) %>%
@@ -81,9 +81,9 @@ run_simu <- function(gps_spec = 1,
 
     matched.inference.sample <-
       stratified_GPS_matching(inference.sample_covs, delta_n,
-        bin_seq = a.vals, exposure_name = "treat",
+        exposure_name = "treat",
         confounders_names = c("cf1", "cf2", "cf3", "cf4", "cf5", "cf6"),
-        em_names = c("em1", "em2", "em3", "em4"),
+        names_of_strata_vars = c("em1", "em2", "em3", "em4"),
         outcome_name = NA
       ) %>%
       mutate(id = row_number()) %>%
@@ -95,31 +95,39 @@ run_simu <- function(gps_spec = 1,
   if (n_trials > 0) {
     for (i in 1:n_trials) {
       # generate outcome data
-      exploration.sample_outcome <-
-        do.call(
-          generate_syn_data_outcome,
-          c(as.list(exploration.sample_covs %>% select(-treat_level, -subsample, -orig_id)), beta = beta, em_spec = em_spec, outcome_sd = outcome_sd, heterogenous_intercept = heterogenous_intercept)
-        ) %>%
-        tibble::rowid_to_column()
+      exploration.sample_outcome <- generate_syn_data_outcome (
+        cf = select(exploration.sample_covs, c(cf1, cf2, cf3, cf4, cf5, cf6)),
+        em = select(exploration.sample_covs, c(em1, em2, em3, em4)),
+        treat = exploration.sample_covs['treat'],
+        outcome_sd = outcome_sd,
+        em_spec = em_spec,
+        heterogenous_intercept = heterogenous_intercept,
+        beta = beta
+      ) %>% tibble::rowid_to_column()
 
-      validation.sample_outcome <-
-        do.call(
-          generate_syn_data_outcome,
-          c(as.list(val.sample_covs %>% select(-treat_level, -subsample, -orig_id)), beta = beta, em_spec = em_spec, outcome_sd = outcome_sd, heterogenous_intercept = heterogenous_intercept)
-        ) %>%
-        tibble::rowid_to_column()
-
-      inference.sample_outcome <-
-        do.call(
-          generate_syn_data_outcome,
-          c(as.list(inference.sample_covs %>% select(-treat_level, -subsample, -orig_id)), beta = beta, em_spec = em_spec, outcome_sd = outcome_sd, heterogenous_intercept = heterogenous_intercept)
-        ) %>%
-        tibble::rowid_to_column()
-
+      validation.sample_outcome <- generate_syn_data_outcome (
+        cf = select(val.sample_covs, c(cf1, cf2, cf3, cf4, cf5, cf6)),
+        em = select(val.sample_covs, c(em1, em2, em3, em4)),
+        treat = val.sample_covs['treat'],
+        outcome_sd = outcome_sd,
+        em_spec = em_spec,
+        heterogenous_intercept = heterogenous_intercept,
+        beta = beta
+      ) %>% tibble::rowid_to_column()
+      
+      inference.sample_outcome <- generate_syn_data_outcome (
+        cf = select(inference.sample_covs, c(cf1, cf2, cf3, cf4, cf5, cf6)),
+        em = select(inference.sample_covs, c(em1, em2, em3, em4)),
+        treat = inference.sample_covs['treat'],
+        outcome_sd = outcome_sd,
+        em_spec = em_spec,
+        heterogenous_intercept = heterogenous_intercept,
+        beta = beta
+      ) %>% tibble::rowid_to_column()
+      
       # add outcome data into matched samples
       matched.exploration.sample.outcomes <-
         matched.exploration.sample %>%
-        select(-Y, -row_index) %>%
         left_join(exploration.sample_outcome, by = c(
           "orig_id" = "rowid", "cf1", "cf2", "cf3", "cf4", "cf5", "cf6", "em1", "em2", "em3", "em4",
           "treat"
@@ -127,14 +135,12 @@ run_simu <- function(gps_spec = 1,
 
       matched.validation.sample.outcomes <-
         matched.validation.sample %>%
-        select(-Y, -row_index) %>%
         left_join(validation.sample_outcome, by = c(
           "orig_id" = "rowid", "cf1", "cf2", "cf3", "cf4", "cf5", "cf6", "em1", "em2", "em3", "em4",
           "treat"
         ))
       matched.inference.sample.outcomes <-
         matched.inference.sample %>%
-        select(-Y, -row_index) %>%
         left_join(inference.sample_outcome, by = c(
           "orig_id" = "rowid", "cf1", "cf2", "cf3", "cf4", "cf5", "cf6", "em1", "em2", "em3", "em4",
           "treat"

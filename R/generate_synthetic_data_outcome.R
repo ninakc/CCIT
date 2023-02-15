@@ -49,8 +49,9 @@ generate_syn_data_outcome <- function(cf, em, treat,
 
     simulated_data<-data.frame(cbind(Y,treat,cf14, cf5, cf6, em1, em2, em3, em4)) %>%
       mutate_at(vars(em1, em2, em3, em4), as.factor)
-    colnames(simulated_data)[3:12]<-c("cf1","cf2","cf3","cf4","cf5","cf6","em1","em2","em3","em4")
+    colnames(simulated_data)[1:12]<-c('Y','treat',"cf1","cf2","cf3","cf4","cf5","cf6","em1","em2","em3","em4")
 
+  print(simulated_data)
   return(simulated_data)
 }
 

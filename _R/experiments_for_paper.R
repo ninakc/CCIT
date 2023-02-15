@@ -1,16 +1,16 @@
 # Load in relevant scripts
 # all R scripts listed below must be lcoated in source_dir
-source_dir <- '/Users/ninakatz-christy/CCIT_Final_refactored/CCIT'
+source_dir <- '/Users/ninakatz-christy/CCIT For Falco/CCIT'
 dir_out <- '/Users/ninakatz-christy/Documents/CCIT/Code/CCIT/simulated_data_09122022/'
-source(paste0(source_dir, '/_R/evaluate.sequence.R'))
+source(paste0(source_dir, '/R/evaluate.sequence.R'))
 source(paste0(source_dir, '/_R/run_simu.R'))
-source(paste0(source_dir, '/_R/create.sequence.R'))
-source(paste0(source_dir, '/_R/rpart_funcs.R'))
-source(paste0(source_dir, '/_R/stratified_GPS_matching.R'))
-source(paste0(source_dir, '/_R/split_dataset.R'))
-source(paste0(source_dir, '/_R/generate_synthetic_data_covs.R'))
-source(paste0(source_dir, '/_R/generate_synthetic_data_outcome.R'))
-source(paste0(source_dir, '/_R/CCIT.R'))
+source(paste0(source_dir, '/R/create.sequence.R'))
+source(paste0(source_dir, '/R/rpart_funcs.R'))
+source(paste0(source_dir, '/R/stratified_GPS_matching.R'))
+source(paste0(source_dir, '/R/split_dataset.R'))
+source(paste0(source_dir, '/R/generate_synthetic_data_covs.R'))
+source(paste0(source_dir, '/R/generate_synthetic_data_outcome.R'))
+source(paste0(source_dir, '/R/CCIT.R'))
 library("devtools")
 install_github("fasrc/CausalGPS", ref="master")
 library(CausalGPS)
@@ -48,30 +48,30 @@ load(paste0(source_dir, '/simulated_data/matched.c.RData'))
 # plot overall covariate balance
 unmatched.no.c.explor <- matched$exploration.sample_covs %>%
   as.data.table
-matched.no.c.explor <- matched$matched.exploration.sample %>%
+matched.no.c.explor <- matched$matched.exploration_sample %>%
   as.data.table
 unmatched.c.explor <- matched.c$exploration.sample_covs %>%
   as.data.table
-matched.c.explor <- matched.c$matched.exploration.sample %>%
+matched.c.explor <- matched.c$matched.exploration_sample %>%
   as.data.table
 
-unmatched.no.c.explor <- matched$exploration.sample_covs %>%
-  as.data.table
-matched.no.c.explor <- matched$matched.exploration.sample %>%
-  as.data.table
-unmatched.c.explor <- matched.c$exploration.sample_covs %>%
-  as.data.table
-matched.c.explor <- matched.c$matched.exploration.sample %>%
-  as.data.table
+# unmatched.no.c.explor <- matched$exploration_sample_covs %>%
+#   as.data.table
+# matched.no.c.explor <- matched$matched_exploration_sample %>%
+#   as.data.table
+# unmatched.c.explor <- matched.c$exploration.sample_covs %>%
+#   as.data.table
+# matched.c.explor <- matched.c$matched.exploration.sample %>%
+#   as.data.table
 
 unmatched_cor.no.c <-
   absolute_corr_fun(unmatched.no.c.explor[,'treat'], unmatched.no.c.explor[,1:6])
 matched_cor.no.c <-
-  absolute_corr_fun(matched.no.c.explor[,'w'], matched.no.c.explor[,6:11])
+  absolute_corr_fun(matched.no.c.explor[,'treat'], matched.no.c.explor[,6:11])
 unmatched_cor.c <-
   absolute_corr_fun(unmatched.c.explor[,'treat'], unmatched.c.explor[,1:6])
 matched_cor.c <-
-  absolute_corr_fun(matched.c.explor[,'w'], matched.c.explor[,6:11])
+  absolute_corr_fun(matched.c.explor[,'treat'], matched.c.explor[,6:11])
 
 abs_cor <-
   rbind(data.frame(cov = c('cf1', 'cf2', 'cf3', 'cf4', 'cf5', 'cf6'),
@@ -97,27 +97,27 @@ for(i in c(0,1)) {
   for (j in c(0,1)) {
     for (k in c(0,1)) {
       for (l in c(0,1)) {
-        unmatched.no.c.explor <- matched$exploration.sample_covs %>%
+        unmatched.no.c.explor <- matched$exploration_sample_covs %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
-        matched.no.c.explor <- matched$matched.exploration.sample %>%
+        matched.no.c.explor <- matched$matched_exploration_sample %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
-        unmatched.c.explor <- matched.c$exploration.sample_covs %>%
+        unmatched.c.explor <- matched.c$exploration_sample_covs %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
-        matched.c.explor <- matched.c$matched.exploration.sample %>%
+        matched.c.explor <- matched.c$matched_exploration_sample %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
 
         unmatched_cor.no.c <-
           absolute_corr_fun(unmatched.no.c.explor[,'treat'], unmatched.no.c.explor[,1:6])
         matched_cor.no.c <-
-          absolute_corr_fun(matched.no.c.explor[,'w'], matched.no.c.explor[,6:11])
+          absolute_corr_fun(matched.no.c.explor[,'treat'], matched.no.c.explor[,6:11])
         unmatched_cor.c <-
           absolute_corr_fun(unmatched.c.explor[,'treat'], unmatched.c.explor[,1:6])
         matched_cor.c <-
-          absolute_corr_fun(matched.c.explor[,'w'], matched.c.explor[,6:11])
+          absolute_corr_fun(matched.c.explor[,'treat'], matched.c.explor[,6:11])
 
         abs_cor <-
           rbind(abs_cor,

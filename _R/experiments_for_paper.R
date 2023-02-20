@@ -1,6 +1,6 @@
 # Load in relevant scripts
 # all R scripts listed below must be lcoated in source_dir
-source_dir <- '/Users/ninakatz-christy/CCIT For Falco/CCIT'
+source_dir <- '/Users/ninakatz-christy/CCIT Forked Repo/CCIT'
 dir_out <- '/Users/ninakatz-christy/Documents/CCIT/Code/CCIT/simulated_data_09122022/'
 source(paste0(source_dir, '/R/evaluate.sequence.R'))
 source(paste0(source_dir, '/_R/run_simu.R'))
@@ -48,11 +48,11 @@ load(paste0(source_dir, '/simulated_data/matched.c.RData'))
 # plot overall covariate balance
 unmatched.no.c.explor <- matched$exploration.sample_covs %>%
   as.data.table
-matched.no.c.explor <- matched$matched.exploration_sample %>%
+matched.no.c.explor <- matched$matched.exploration.sample %>%
   as.data.table
 unmatched.c.explor <- matched.c$exploration.sample_covs %>%
   as.data.table
-matched.c.explor <- matched.c$matched.exploration_sample %>%
+matched.c.explor <- matched.c$matched.exploration.sample %>%
   as.data.table
 
 # unmatched.no.c.explor <- matched$exploration_sample_covs %>%
@@ -97,16 +97,16 @@ for(i in c(0,1)) {
   for (j in c(0,1)) {
     for (k in c(0,1)) {
       for (l in c(0,1)) {
-        unmatched.no.c.explor <- matched$exploration_sample_covs %>%
+        unmatched.no.c.explor <- matched$exploration.sample_covs %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
-        matched.no.c.explor <- matched$matched_exploration_sample %>%
+        matched.no.c.explor <- matched$matched.exploration.sample %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
-        unmatched.c.explor <- matched.c$exploration_sample_covs %>%
+        unmatched.c.explor <- matched.c$exploration.sample_covs %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
-        matched.c.explor <- matched.c$matched_exploration_sample %>%
+        matched.c.explor <- matched.c$matched.exploration.sample %>%
           filter(em1 == i, em2 == j, em3 == k, em4 == l) %>%
           as.data.table
 
